@@ -828,13 +828,21 @@ def check_health():
 
 def print_banner():
     """Print SkillFlow banner."""
-    print(f"\n{Colors.BOLD}{Colors.CYAN}")
-    print("  ___ _   _ _ _ ___ _            ")
-    print(" / __| |_(_) | | __| |_____ __ __")
-    print(" \__ \ / / | | | _|| / _ \\\\ V  V / ")
-    print(" |___/_\\_\\|_|_|_|_| |_\\___/ \\_/\\_/")
-    print(f"{Colors.ENDC}")
-    print(f"{Colors.BLUE}  Infinite Context. Zero Token Tax.{Colors.ENDC}\n")
+    banner_path = Path(__file__).parent / "banner.txt"
+    try:
+        with open(banner_path, 'r', encoding='utf-8') as f:
+            banner = f.read()
+        print(f"\n{Colors.BOLD}{Colors.CYAN}{banner}{Colors.ENDC}")
+        print(f"{Colors.BLUE}  Infinite Context. Zero Token Tax.{Colors.ENDC}\n")
+    except Exception:
+        # Fallback if banner.txt missing
+        print(f"\n{Colors.BOLD}{Colors.CYAN}")
+        print("  ___ _   _ _ _ ___ _            ")
+        print(" / __| |_(_) | | __| |_____ __ __")
+        print(" \__ \ / / | | | _|| / _ \\ V  V / ")
+        print(" |___/_\\_\\|_|_|_|_| |_\\___/ \\_/\\_/")
+        print(f"{Colors.ENDC}")
+        print(f"{Colors.BLUE}  Infinite Context. Zero Token Tax.{Colors.ENDC}\n")
 
 # ==========================================
 # Main Entry Point
