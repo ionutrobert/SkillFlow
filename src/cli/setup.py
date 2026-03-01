@@ -379,16 +379,15 @@ def generate_pointers(dry_run: bool = False, config: dict = None, state: Migrati
             pointer_dir.mkdir(exist_ok=True)
             
             # Create pointer SKILL.md with reference to index
-            content = f"""---
+            content = rf"""---
 name: {pointer_name}
 description:Provides access to {count} specialized skills in {category.replace('-', ' ').title()} category.
 ---
 
   ___ _   _ _ _ ___ _            
  / __| |_(_) | | __| |_____ __ __
- \__ \ / / | | | _|| / _ \\\\ V  V / 
- |___/\\_\\_\\|_|_|_| |_\\___/ \\_/\\_/ 
-                                  
+ \__ \ / / | | | _|| / _ \\ V  V / 
+ |___/\_\_\|_|_|_| |_\___/ \_/\_/                                   
 
 # {category.replace('-', ' ').title()} Capability Library
 
