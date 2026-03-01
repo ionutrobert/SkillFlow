@@ -86,12 +86,20 @@ See `src/cli/README.md` for more.
 
 ## GUI (Optional)
 
-Windows GUI built with .NET 10.0 WinForms.
+### Portable (Recommended)
+
+Download the portable package from the [latest release](https://github.com/ionutrobert/SkillFlow/releases). It includes everything needed — just extract and run.
+
+**System Requirements:** Windows 10/11
+
+### Build from Source
+
+If you want to build the GUI yourself:
 
 **Requirements:**
 - Windows 10/11
 - .NET 10.0 SDK/Runtime
-- Python 3.8+ (in PATH)
+- Python 3.8+ (in PATH) **only for building**; the portable package bundles Python
 
 **Build:**
 ```bash
@@ -99,11 +107,13 @@ cd src/gui
 dotnet build -c Release
 ```
 
-**Run:**
+**Run (development):**
 ```
 bin\Release\net10.0-windows\SkillFlowGUI.exe
 ```
 
 The GUI auto-detects `setup.py` relative to its location. It shows the banner, strips ANSI codes, and provides one-click access to all commands.
+
+When using the portable package, the GUI automatically uses the bundled Python interpreter — no installation required.
 
 See `src/gui/README.md` for details.
