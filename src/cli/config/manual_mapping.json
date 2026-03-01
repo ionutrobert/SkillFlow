@@ -1,0 +1,19 @@
+{
+  "nextjs-best-practices": "frontend/nextjs",
+  "nextjs": "frontend/nextjs",
+  "supabase-auth": "backend/supabase",
+  "supabase": "backend/supabase",
+  "tailwind-patterns": "frontend/tailwind",
+  "tailwind": "frontend/tailwind",
+  "shadcn-ui": "frontend/shadcn",
+  "shadcn": "frontend/shadcn",
+  "react-best-practices": "frontend/react",
+  "react": "frontend/react",
+  "vercel-deployment": "cloud/vercel",
+  "vercel": "cloud/vercel",
+  "postgresql": "database/postgres",
+  "postgres": "database/postgres",
+  "typescript": "languages/typescript",
+  "javascript": "languages/javascript",
+  "python": "languages/python"
+}

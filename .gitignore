@@ -1,0 +1,70 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+pip-log.txt
+pip-delete-this-directory
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+
+# .NET
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.deps.json
+*.runtimeconfig.json
+*.AssemblyInfo.cs
+*.FileListAbsolute.txt
+.nuget/
+packages/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# SkillFlow specific (user-specific, not to be committed)
+.skillflow-state.json
+states.json
+categorization_report.csv
+skills_list.csv
+dry_run_latest.csv
+
+# Vault and active skills (user data)
+**/.opencode-skill-libraries/
+**/.opencode/skills/
+**/.agents/skills/
+**/.config/opencode/
+**/.skillflow-vault/
+
+# Temporary files
+tmp/
+temp/
+
+# Logs
+*.log
+
+# Temporary files
+tmp/
+temp/
