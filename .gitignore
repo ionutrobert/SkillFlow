@@ -32,6 +32,10 @@ obj/
 .nuget/
 packages/
 
+# Build outputs
+dist/
+publish/
+
 # IDE
 .vscode/
 .idea/

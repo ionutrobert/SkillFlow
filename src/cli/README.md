@@ -30,6 +30,16 @@ Restart your agent. Done.
 
 Token usage drops from tens of thousands to ~1,500.
 
+## Testing
+
+Validate your installation:
+
+```bash
+python test_skillflow.py
+```
+
+Checks index, pointers, vault structure, and sample lookups.
+
 ## Files
 
 - `src/cli/setup.py` - Main script

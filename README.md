@@ -58,6 +58,23 @@ After revert, your agent will load all skills normally again (high token usage).
 4. **Agent startup**: Loads only pointers (~1.5k tokens) instead of 80k+
 5. **On-demand**: When a skill is needed, agent reads index → goes to vault → reads SKILL.md
 
+## Testing
+
+After migration, run the included test script to verify everything is working:
+
+```bash
+python test_skillflow.py
+```
+
+It checks:
+- `SKILL_INDEX.json` exists and contains your skills
+- Category pointers are in place
+- Sample skill lookups work
+- Vault structure is intact
+- Migration state file present
+
+All tests should pass. If not, review the output and consider running `--revert` then retrying.
+
 ## Notes
 
 - Vault: `~/.opencode-skill-libraries/`
