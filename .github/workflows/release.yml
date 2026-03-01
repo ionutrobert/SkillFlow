@@ -23,43 +23,56 @@ jobs:
     - name: Download Python
       run: |
         curl -L https://www.python.org/ftp/python/3.12.6/python-3.12.6-embed-amd64.zip -o python-embed.zip
-        7z x python-embed.zip -opython
-        del python-embed.zip
+        Expand-Archive python-embed.zip python
+        Remove-Item python-embed.zip
         
     - name: Build GUI
       run: dotnet publish src/gui/SkillFlowGUI.csproj -c Release -r win-x64
       
-    - name: Package Portable
+    - name: Package
       run: |
-        mkdir package
-        copy src\gui\bin\Release\net10.0-windows\win-x64\publish\* package\
-        xcopy /E /I python package\python\
-        xcopy /E /I src\cli package\cli\
-        
-    - name: Create Zip
-      run: |
-        powershell Compress-Archive -Path package\* -DestinationPath "SkillFlow-portable-$env:GITHUB_REF_NAME-win-x64.zip"
-        
-    - name: List Output
-      run: dir *.zip
+        $tag = "${{ github.ref_name }}"
+        $zipName = "SkillFlow-portable-$tag-win-x64.zip"
+        New-Item -ItemType Directory -Force -Path package | Out-Null
+        Copy-Item -Recurse -Force src\gui\bin\Release\net10.0-windows\win-x64\publish\* package\
+        Copy-Item -Recurse -Force python package\python
+        Copy-Item -Recurse -Force src\cli package\cli
+        Compress-Archive -Path package\* -DestinationPath $zipName -Force
+        Write-Host "Created $zipName"
+        Get-ChildItem $zipName
+      shell: pwsh
       
-    - name: Generate Release Notes
-      run: |
-        echo # ${{ github.ref_name }} > release_notes.md
-        echo. >> release_notes.md
-        echo Built on: %DATE% >> release_notes.md
-        echo. >> release_notes.md
-        echo Portable package for Windows. >> release_notes.md
-        echo Download, extract, run SkillFlowGUI.exe. >> release_notes.md
-        echo. >> release_notes.md
-        echo Token reduction: ~~98%>> release_notes.md
-        
     - name: Create Release
       uses: softprops/action-gh-release@v1
       with:
         tag_name: ${{ github.ref_name }}
         name: ${{ github.ref_name }}
-        body_path: release_notes.md
+        body: |
+          **Built on:** ${{ github.event.head_commit.timestamp }}
+          
+          ## Installation
+          
+          1. Download `SkillFlow-portable-${{ github.ref_name }}-win-x64.zip`
+          2. Extract anywhere
+          3. Run `SkillFlowGUI.exe` (no installation required)
+          
+          ## Token Reduction
+          
+          - Before: ~80,000 tokens
+          - After: ~1,500 tokens
+          - Reduction: ~98%
+          
+          ## Reverting
+          
+          ```bash
+          python setup.py --revert
+          ```
+          
+          ## Testing
+          
+          ```bash
+          python test_skillflow.py
+          ```
         files: SkillFlow-portable-${{ github.ref_name }}-win-x64.zip
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
