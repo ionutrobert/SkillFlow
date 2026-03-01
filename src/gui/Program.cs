@@ -30,14 +30,27 @@ namespace SkillFlowGUI
             string exePath = Application.ExecutablePath;
             string exeDir = Path.GetDirectoryName(exePath);
             
-            // Support both repo layout and standalone
-            skillflowPath = Path.Combine(exeDir, "src", "cli", "setup.py");
-            if (!File.Exists(skillflowPath))
+            // Check common layouts: portable (cli/setup.py) then repo (src/cli/setup.py)
+            string portablePath = Path.Combine(exeDir, "cli", "setup.py");
+            string repoPath = Path.Combine(exeDir, "src", "cli", "setup.py");
+            
+            if (File.Exists(portablePath))
             {
-                skillflowPath = Path.Combine(exeDir, "setup.py");
+                skillflowPath = portablePath;
+            }
+            else if (File.Exists(repoPath))
+            {
+                skillflowPath = repoPath;
+            }
+            else
+            {
+                // Fallback to hardcoded dev path for convenience
+                skillflowPath = @"C:\Work\SkillFlow\setup.py";
                 if (!File.Exists(skillflowPath))
                 {
-                    skillflowPath = @"C:\Work\SkillFlow\setup.py"; // fallback
+                    MessageBox.Show($"Cannot find setup.py. Expected locations:\n{portablePath}\n{repoPath}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    this.Close();
+                    return;
                 }
             }
             
@@ -102,36 +115,35 @@ namespace SkillFlowGUI
             this.Controls.AddRange(new Control[] { btnDryRun, btnMigrate, btnStats, btnStatus, btnRevert, btnOptimize, btnOpenVault, btnOpenConfig, txtOutput, lblStatus });
         }
 
-         private void CheckPrerequisites()
-         {
-             if (!File.Exists(skillflowPath))
-             {
-                 MessageBox.Show($"Error: Cannot find setup.py at:\n{skillflowPath}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                 this.Close();
-                 return;
-             }
+          private void CheckPrerequisites()
+          {
+              if (!File.Exists(skillflowPath))
+              {
+                  MessageBox.Show($"Error: Cannot find setup.py at:\n{skillflowPath}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                  this.Close();
+                  return;
+              }
 
-             // Check for bundled Python first
-             string bundledPython = Path.Combine(Application.StartupPath, "python", "python.exe");
-             string pythonExe = "python";
-             
-             if (File.Exists(bundledPython))
-             {
-                 lblStatus.Text = "Ready - Using bundled Python";
-             }
-             else
-             {
-                 try
-                 {
-                     Process.Start("python", "--version")?.WaitForExit();
-                     lblStatus.Text = "Ready - Python detected in PATH";
-                 }
-                 catch
-                 {
-                     lblStatus.Text = "Warning: Python not found. Install Python or use the portable package.";
-                 }
-             }
-         }
+              // Check for bundled Python first
+              string bundledPython = Path.Combine(Application.StartupPath, "python", "python.exe");
+              
+              if (File.Exists(bundledPython))
+              {
+                  lblStatus.Text = "Ready - Using bundled Python";
+              }
+              else
+              {
+                  try
+                  {
+                      Process.Start("python", "--version")?.WaitForExit();
+                      lblStatus.Text = "Ready - Python detected in PATH";
+                  }
+                  catch
+                  {
+                      lblStatus.Text = "Warning: Python not found. Install Python or use the portable package.";
+                  }
+              }
+          }
 
         private void BtnMigrate_Click(object sender, EventArgs e)
         {
