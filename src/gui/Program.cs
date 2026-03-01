@@ -102,26 +102,36 @@ namespace SkillFlowGUI
             this.Controls.AddRange(new Control[] { btnDryRun, btnMigrate, btnStats, btnStatus, btnRevert, btnOptimize, btnOpenVault, btnOpenConfig, txtOutput, lblStatus });
         }
 
-        private void CheckPrerequisites()
-        {
-            if (!File.Exists(skillflowPath))
-            {
-                MessageBox.Show($"Error: Cannot find setup.py at:\n{skillflowPath}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                this.Close();
-                return;
-            }
+         private void CheckPrerequisites()
+         {
+             if (!File.Exists(skillflowPath))
+             {
+                 MessageBox.Show($"Error: Cannot find setup.py at:\n{skillflowPath}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                 this.Close();
+                 return;
+             }
 
-            // Check Python
-            try
-            {
-                Process.Start("python", "--version")?.WaitForExit();
-                lblStatus.Text = "Ready - Python detected";
-            }
-            catch
-            {
-                lblStatus.Text = "Warning: Python not found in PATH";
-            }
-        }
+             // Check for bundled Python first
+             string bundledPython = Path.Combine(Application.StartupPath, "python", "python.exe");
+             string pythonExe = "python";
+             
+             if (File.Exists(bundledPython))
+             {
+                 lblStatus.Text = "Ready - Using bundled Python";
+             }
+             else
+             {
+                 try
+                 {
+                     Process.Start("python", "--version")?.WaitForExit();
+                     lblStatus.Text = "Ready - Python detected in PATH";
+                 }
+                 catch
+                 {
+                     lblStatus.Text = "Warning: Python not found. Install Python or use the portable package.";
+                 }
+             }
+         }
 
         private void BtnMigrate_Click(object sender, EventArgs e)
         {
@@ -175,29 +185,38 @@ namespace SkillFlowGUI
             }
         }
 
-        private void RunCommand(string arguments)
-        {
-            if (!File.Exists(skillflowPath))
-            {
-                MessageBox.Show("setup.py not found!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
+         private void RunCommand(string arguments)
+         {
+             if (!File.Exists(skillflowPath))
+             {
+                 MessageBox.Show("setup.py not found!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                 return;
+             }
 
-            txtOutput.Clear();
-            lblStatus.Text = "Running...";
+             txtOutput.Clear();
+             lblStatus.Text = "Running...";
 
-            var startInfo = new ProcessStartInfo
-            {
-                FileName = "python",
-                Arguments = $"\"{skillflowPath}\" {arguments}",
-                WorkingDirectory = Path.GetDirectoryName(skillflowPath),
-                UseShellExecute = false,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                CreateNoWindow = true,
-                StandardOutputEncoding = System.Text.Encoding.UTF8,
-                StandardErrorEncoding = System.Text.Encoding.UTF8
-            };
+             // Determine which Python to use
+             string bundledPython = Path.Combine(Application.StartupPath, "python", "python.exe");
+             string pythonExe = "python";
+             
+             if (File.Exists(bundledPython))
+             {
+                 pythonExe = $"\"{bundledPython}\"";
+             }
+
+             var startInfo = new ProcessStartInfo
+             {
+                 FileName = pythonExe,
+                 Arguments = $"\"{skillflowPath}\" {arguments}",
+                 WorkingDirectory = Path.GetDirectoryName(skillflowPath),
+                 UseShellExecute = false,
+                 RedirectStandardOutput = true,
+                 RedirectStandardError = true,
+                 CreateNoWindow = true,
+                 StandardOutputEncoding = System.Text.Encoding.UTF8,
+                 StandardErrorEncoding = System.Text.Encoding.UTF8
+             };
 
             var process = new Process
             {
