@@ -38,42 +38,21 @@ jobs:
         
     - name: Create Zip
       run: |
-        powershell Compress-Archive -Path package\* -DestinationPath "SkillFlow-portal-${{ github.ref_name }}-win-x64.zip"
+        powershell Compress-Archive -Path package\* -DestinationPath "SkillFlow-portable-$env:GITHUB_REF_NAME-win-x64.zip"
         
     - name: List Output
       run: dir *.zip
-        
+      
     - name: Generate Release Notes
-      shell: pwsh
       run: |
-        $date = Get-Date -Format "yyyy-MM-dd"
-        $tag = "${{ github.ref_name }}"
-        $zipFile = "SkillFlow-portal-$tag-win-x64.zip"
-        $content = @"
-# $tag
-
-**Built on:** $date
-
-## Installation
-
-Download and extract, then run `SkillFlowGUI.exe`.
-
-## Features
-
-- Portable (no install)
-- Bundled Python 3.12
-- Automatic categorization
-
-## Token Reduction
-
-- Before: ~80k
-- After: ~1.5k
-
----
-
-*Auto-generated*
-"@
-        Set-Content release_notes.md $content
+        echo # ${{ github.ref_name }} > release_notes.md
+        echo. >> release_notes.md
+        echo Built on: %DATE% >> release_notes.md
+        echo. >> release_notes.md
+        echo Portable package for Windows. >> release_notes.md
+        echo Download, extract, run SkillFlowGUI.exe. >> release_notes.md
+        echo. >> release_notes.md
+        echo Token reduction: ~~98%>> release_notes.md
         
     - name: Create Release
       uses: softprops/action-gh-release@v1
@@ -81,6 +60,6 @@ Download and extract, then run `SkillFlowGUI.exe`.
         tag_name: ${{ github.ref_name }}
         name: ${{ github.ref_name }}
         body_path: release_notes.md
-        files: SkillFlow-portal-${{ github.ref_name }}-win-x64.zip
+        files: SkillFlow-portable-${{ github.ref_name }}-win-x64.zip
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
